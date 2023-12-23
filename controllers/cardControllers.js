@@ -7,7 +7,7 @@ const getCards = async (req, res) => {
     .status(200)
     .json({ data: cards });
   } catch (error) {
-    if (err.name === "SomeErrorName") {
+    if (error.name === "SomeErrorName") {
       return res
       .status(400)
       .send({ message: "Переданы некорректные данные" });
@@ -26,8 +26,8 @@ const createCard = async (req, res) => {
     res
     .status(201)
     .json(card);
-  } catch (err) {
-    if (err.name === "SomeErrorName") {
+  } catch (error) {
+    if (error.name === "SomeErrorName") {
       res
       .status(400)
       .send({ message: "Переданы некорректные данные" });
@@ -50,7 +50,7 @@ const deleteCard = async (req, res) => {
     res
     .status(200)
     .send({ message: "Карточка удалена" });
-  } catch (err) {
+  } catch (error) {
     res
     .status(500)
     .send({ message: "Ошибка по-умолчанию" });
@@ -72,7 +72,7 @@ const likeCard = async (req, res) => {
       .status(404)
       .send({ message: "Передан несуществующий _id карточки" });
     }
-  } catch (err) {
+  } catch (error) {
     res
     .status(500)
     .send({ message: "Ошибка по-умолчанию" });
@@ -94,7 +94,7 @@ const dislikeCard = async (req, res) => {
       .status(404)
       .send({ message: "Передан несуществующий _id карточки" });
     }
-  } catch (err) {
+  } catch (error) {
     res
     .status(500)
     .send({ message: "Ошибка по-умолчанию" });

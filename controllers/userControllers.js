@@ -7,7 +7,7 @@ const getUsers= async (req, res) => {
     return res
     .send(users);
   } catch (error) {
-    if (err.name === "SomeErrorName") {
+    if (error.name === "SomeErrorName") {
       return res
       .status(400)
       .send({ message: "Переданы некорректные данные" });
@@ -35,7 +35,7 @@ const getUserById = async (req, res) => {
     res
     .status(200)
     .json(user);
-  } catch (err) {
+  } catch (error) {
     res
     .status(500)
     .send({ message: "Ошибка по умолчанию" });
@@ -48,8 +48,8 @@ const createUser = async (req, res) => {
     return res
     .status(201)
     .send(newUser);
-  } catch (err) {
-    if (err.name === "SomeErrorName") {
+  } catch (error) {
+    if (error.name === "SomeErrorName") {
       return res
       .status(400)
       .send({ message: "Переданы некорректные данные" });
@@ -75,8 +75,8 @@ const updateUser = async (req, res) => {
     res
     .status(200)
     .json(updateUser);
-  } catch (err) {
-    if (err.name === "SomeErrorName") {
+  } catch (error) {
+    if (error.name === "SomeErrorName") {
       return res
       .status(400)
       .send({ message: "Переданы некорректные данные" });
@@ -102,8 +102,8 @@ const updateAvatar = async (req, res) => {
     res
     .status(200)
     .json(updateUser);
-  } catch (err) {
-    if (err.name === "SomeErrorName") {
+  } catch (error) {
+    if (error.name === "SomeErrorName") {
       return res
       .status(400)
       .send({ message: "Переданы некорректные данные" });
