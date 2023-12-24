@@ -28,9 +28,6 @@ app.use((req, res, next) => {
 
 app.use(router)
 
-app.use((res) => {
-  res.status(404).json({ message: "Страница не найдена" });
-});
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
