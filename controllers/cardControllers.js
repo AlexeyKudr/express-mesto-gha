@@ -53,25 +53,23 @@ const deleteCard = async (req, res) => {
 
 const likeCard = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+      return res.status(400).send({ message: "Передан невалидный _id карточки" });
+    }
     const Card = await card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true }
     );
     if (!Card) {
-      return res
-      .status(404)
-      .send({ message: "Передан несуществующий _id карточки" });
+      return res.status(404).send({ message: "Передан несуществующий _id карточки" });
     }
-    res
-    .status(200)
-    .send(Card);
+    res.status(200).send(Card);
   } catch (error) {
-    res
-    .status(500)
-    .send({ message: "Ошибка по умолчанию" });
+    res.status(500).send({ message: "Ошибка по умолчанию" });
   }
 };
+
 
 const dislikeCard = async (req, res) => {
   try {

@@ -1,6 +1,7 @@
 const user = require("../models/user");
+const mongoose = require('mongoose');
 
-const { NotFoundError } = require("../utils/NotFoundError");
+
 
 const getUsers= async (req, res) => {
   try {
@@ -22,26 +23,19 @@ return res
 const getUserById = async (req, res) => {
   try {
     const { userId } = req.params;
-    const User = await user.findById(userId).orFail(
-      () => new NotFoundError('Пользователь не найден'));
-    return res
-    .status(200).send(User);
-  } catch (error) {
-    switch (error.name) {
-      case 'CastError':
-        return res
-       .status(404)
-       .send({ message: "Передан не валидный Id" });
-       case "NotFoundError":
-        return res
-        .status(error.statusCode).send({message: error.message})
-      default:
-        return res
-        .status(500)
-        .send({ message: "Ошибка по умолчанию" });
+    const User = await user.findById(userId);
+    if (!User) {
+      return res.status(404).send({ message: "Пользователь не найден" });
     }
+    res.status(200).send(User);
+  } catch (err) {
+    if (err instanceof mongoose.Error.CastError) {
+      return res.status(400).send({ message: "Передан не валидный Id" });
+    }
+    res.status(500).send({ message: "Ошибка по умолчанию" });
   }
-}
+};
+
 
 const createUser = async (req, res) => {
   try {
