@@ -1,8 +1,6 @@
 const user = require("../models/user");
 const mongoose = require('mongoose');
 
-
-
 const getUsers= async (req, res) => {
   try {
     const users = await user.find({});
