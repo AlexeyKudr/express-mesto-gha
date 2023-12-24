@@ -1,4 +1,5 @@
 const card = require("../models/card");
+const mongoose = require('mongoose');
 
 const getCards = async (req, res) => {
   try {
@@ -22,83 +23,76 @@ const createCard = async (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   try {
-    const card = await card.create({ name, link, owner });
-    res
-    .status(201)
-    .json(card);
+    const newCard = await card.create({ name, link, owner });
+    res.status(201).send(newCard);
   } catch (error) {
-    if (error.name === "SomeErrorName") {
-      res
-      .status(400)
-      .send({ message: "Переданы некорректные данные" });
-    } else {
-      res
-      .status(500)
-      .send({ message: "Ошибка по-умолчанию" });
+    switch (error.name) {
+      case 'ValidationError':
+        return res.status(400).send({ message: "Переданы некорректные данные", error: error.message });
+      default:
+        return res.status(500).send({ message: "Ошибка по умолчанию"});
     }
   }
-};
+}
 
 const deleteCard = async (req, res) => {
   try {
-    const card = await card.findByIdAndRemove(req.params.cardId);
-    if (!card) {
-      return res
-      .status(404)
-      .send({ message: "Карточка не найдена" });
+    const { cardId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(cardId)) {
+      return res.status(400).send({ message: "Некорректный формат ID карточки" });
     }
-    res
-    .status(200)
-    .send({ message: "Карточка удалена" });
-  } catch (error) {
-    res
-    .status(500)
-    .send({ message: "Ошибка по-умолчанию" });
+    const Card = await card.findByIdAndDelete(cardId);
+    if (!Card) {
+      return res.status(404).send({ message: "Карточка не найдена" });
+    }
+    res.status(200).send({ message: "Карточка удалена" });
+  } catch (err) {
+    res.status(500).send({ message: "На сервере произошла ошибка" });
   }
 };
 
 const likeCard = async (req, res) => {
   try {
-    const card = await card.findByIdAndUpdate(
+    const Card = await card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true }
     );
-    res
-    .status(200)
-    .json(card);
-    if (!card) {
+    if (!Card) {
       return res
       .status(404)
       .send({ message: "Передан несуществующий _id карточки" });
     }
+    res
+    .status(200)
+    .send(Card);
   } catch (error) {
     res
     .status(500)
-    .send({ message: "Ошибка по-умолчанию" });
+    .send({ message: "Ошибка по умолчанию" });
   }
 };
 
 const dislikeCard = async (req, res) => {
   try {
-    const card = await card.findByIdAndUpdate(
+    const Card = await card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true }
     );
-    res
-    .status(200)
-    .json(card);
-    if (!card) {
+    if (!Card) {
       return res
       .status(404)
       .send({ message: "Передан несуществующий _id карточки" });
     }
-  } catch (error) {
+    res
+    .status(200)
+    .send(Card);
+  } catch (err) {
     res
     .status(500)
-    .send({ message: "Ошибка по-умолчанию" });
+    .send({ message: "Ошибка по умолчанию" });
   }
 };
 
-module.exports = { getCards,createCard, deleteCard, likeCard, dislikeCard };
+module.exports = { getCards, createCard, deleteCard, likeCard, dislikeCard };

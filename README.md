@@ -2,7 +2,6 @@
 # Проект Mesto фронтенд + бэкенд
 [Ссылка на мой репозиторий](https://github.com/AlexeyKudr/express-mesto-gha)
 
-[Ссылка на мой репозиторий](https://github.com/AlexeyKudr/express-mesto-gha)
 
 ## Директории
 
