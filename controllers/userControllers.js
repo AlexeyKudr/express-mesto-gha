@@ -67,7 +67,7 @@ const updateUser = async (req, res) => {
     }
     return res
       .status(OK)
-      .json(updateUser);
+      .json(UpdateUser);
   } catch (error) {
     switch (error.name) {
       case 'ValidationError':
@@ -96,7 +96,7 @@ const updateAvatar = async (req, res) => {
     }
     return res
       .status(OK)
-      .json(updateUser);
+      .json(UpdateUser);
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res

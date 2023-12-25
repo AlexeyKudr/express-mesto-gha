@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 app.use(router);
 
 app.use((req, res) => {
-  res.status(404).send('Страница не найдена');
+  res.status(404).json('Страница не найдена');
 });
 
 app.listen(PORT, () => {
