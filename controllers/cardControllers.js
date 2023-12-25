@@ -77,13 +77,18 @@ const dislikeCard = async (req, res) => {
     );
     if (!Card) {
       return res
-        .status(HTTP_BAD_REQUEST)
+        .status(HTTP_NOT_FOUND)
         .send({ message: 'Передан несуществующий _id карточки' });
     }
     return res
       .status(OK)
-      .send(Card);
+      .send(card);
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      return res
+        .status(HTTP_BAD_REQUEST)
+        .send({ message: 'Указан некорректный _id карточки' });
+    }
     return res
       .status(HTTP_INTERNAL_SERVER_ERROR)
       .send({ message: 'Ошибка по умолчанию' });
