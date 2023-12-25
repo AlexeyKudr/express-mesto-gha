@@ -1,112 +1,114 @@
-const user = require("../models/user");
 const mongoose = require('mongoose');
+const user = require('../models/user');
+const {
+  HTTP_BAD_REQUEST, HTTP_INTERNAL_SERVER_ERROR, HTTP_NOT_FOUND, OK,
+} = require('../utils/const');
 
-const getUsers= async (req, res) => {
+const getUsers = async (req, res) => {
   try {
     const users = await user.find({});
-    return res
-    .send(users);
+    res
+      .status(OK)
+      .send(users);
   } catch (error) {
-    if (error.name === "SomeErrorName") {
-      return res
-      .status(400)
-      .send({ message: "Переданы некорректные данные" });
-    }
-return res
-.status(500)
-.send({message: 'Ошибка по умолчанию'});
+    res
+      .status(HTTP_INTERNAL_SERVER_ERROR)
+      .send({ message: 'Ошибка по умолчанию' });
   }
-}
+};
 
 const getUserById = async (req, res) => {
   try {
     const { userId } = req.params;
     const User = await user.findById(userId);
     if (!User) {
-      return res.status(404).send({ message: "Пользователь не найден" });
+      return res.status(HTTP_NOT_FOUND).send({ message: 'Пользователь не найден' });
     }
-    res.status(200).send(User);
+    return res.status(OK).send(User);
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
-      return res.status(400).send({ message: "Передан не валидный Id" });
+      return res.status(HTTP_BAD_REQUEST).send({ message: 'Передан не валидный Id' });
     }
-    res.status(500).send({ message: "Ошибка по умолчанию" });
+    return res.status(HTTP_INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' });
   }
 };
-
 
 const createUser = async (req, res) => {
   try {
     const newUser = await user.create(req.body);
-    res
-    .status(201)
-    .send(newUser);
+    return res
+      .status(201)
+      .send(newUser);
   } catch (error) {
     switch (error.name) {
       case 'ValidationError':
         return res
-        .status(400)
-        .send({ message: "Переданы некорректные данные", error: error.message });
+          .status(HTTP_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные' });
+      default:
+        return res
+          .status(HTTP_INTERNAL_SERVER_ERROR)
+          .send({ message: 'Ошибка по умолчанию' });
     }
-    res
-    .status(500)
-    .send({ message: "Ошибка по умолчанию" });
   }
-}
+};
 
 const updateUser = async (req, res) => {
   try {
-    const updateUser = await user.findByIdAndUpdate(
+    const UpdateUser = await user.findByIdAndUpdate(
       req.user._id,
       { $set: req.body },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
-    if (!updateUser) {
+    if (!UpdateUser) {
       return res
-        .status(404)
-        .send({ message: "Пользователь не найден" });
+        .status(HTTP_NOT_FOUND)
+        .send({ message: 'Пользователь не найден' });
     }
-    res
-    .status(200)
-    .json(updateUser);
+    return res
+      .status(OK)
+      .json(updateUser);
   } catch (error) {
     switch (error.name) {
       case 'ValidationError':
         return res
-        .status(400)
-        .send({ message: "Переданы некорректные данные", error: error.message });
+          .status(HTTP_BAD_REQUEST)
+          .send({ message: 'Переданы некорректные данные', error: error.message });
+      default:
+        return res
+          .status(HTTP_INTERNAL_SERVER_ERROR)
+          .send({ message: 'Ошибка по умолчанию' });
     }
-    res
-    .status(500)
-    .send({ message: "Ошибка по умолчанию" });
   }
-}
+};
 
 const updateAvatar = async (req, res) => {
   try {
-    const updateUser = await user.findByIdAndUpdate(
+    const UpdateUser = await user.findByIdAndUpdate(
       req.user._id,
       { avatar: req.body.avatar },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
-    if (!updateUser) {
+    if (!UpdateUser) {
       return res
-        .status(404)
-        .send({ message: "Пользователь не найден" });
+        .status(HTTP_NOT_FOUND)
+        .send({ message: 'Пользователь не найден' });
     }
-    res
-    .status(200)
-    .json(updateUser);
+    return res
+      .status(OK)
+      .json(updateUser);
   } catch (error) {
-    if (error.name === "SomeErrorName") {
+    if (error.name === 'ValidationError') {
       return res
-      .status(400)
-      .send({ message: "Переданы некорректные данные" });
+        .status(HTTP_BAD_REQUEST)
+        .send({ message: 'Переданы некорректные данные' });
     }
-    res
-    .status(500)
-    .send({ message: "Ошибка по умолчанию" });
+    return res
+      .status(HTTP_INTERNAL_SERVER_ERROR)
+      .send({ message: 'Ошибка по умолчанию' });
   }
-}
+};
 
-module.exports = { getUsers, getUserById, createUser, updateUser, updateAvatar };
+module.exports = {
+  getUsers, getUserById, createUser, updateUser, updateAvatar,
+};

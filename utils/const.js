@@ -1,0 +1,11 @@
+const HTTP_NOT_FOUND = 404;
+const HTTP_BAD_REQUEST = 400;
+const HTTP_INTERNAL_SERVER_ERROR = 500;
+const OK = 200;
+
+module.exports = {
+  HTTP_NOT_FOUND,
+  HTTP_BAD_REQUEST,
+  HTTP_INTERNAL_SERVER_ERROR,
+  OK,
+};

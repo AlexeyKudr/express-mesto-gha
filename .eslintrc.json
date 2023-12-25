@@ -4,21 +4,11 @@
         "commonjs": true,
         "es2021": true
     },
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
+    "extends": "airbnb-base",
     "parserOptions": {
         "ecmaVersion": "latest"
     },
-    "plugins": [
-        "@typescript-eslint",
-        "react"
-    ],
     "rules": {
-      "@typescript-eslint/no-var-requires": "off",
-      "no-underscore-dangle": ["error", { "allow": ["_id"] }]
+      "no-underscore-dangle": ["error", { "allow": ["_id"]}]
     }
 }
