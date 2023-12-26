@@ -82,9 +82,9 @@ const dislikeCard = async (req, res) => {
     }
     return res
       .status(OK)
-      .send(card);
+      .send(Card);
   } catch (err) {
-    if (err.name === 'ValidationError') {
+    if (err.name === 'CastError') {
       return res
         .status(HTTP_BAD_REQUEST)
         .send({ message: 'Указан некорректный _id карточки' });
