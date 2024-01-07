@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { celebrate } = require('celebrate');
 const router = require('./routers');
+const errors = require('./middlewars/errors');
 
 const app = express();
 const PORT = 3000;
@@ -13,16 +15,9 @@ mongoose
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6586a97952d463ec6c5836f7',
-  };
-
-  next();
-});
-
 app.use(router);
-
+app.use(celebrate());
+app.use(errors);
 app.use((req, res) => {
   res.status(404).json({ message: 'Страница не найдена' });
 });
