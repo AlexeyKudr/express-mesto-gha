@@ -1,26 +1,55 @@
-const { joi } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 
-const urlAvatarValid = /^(https?:\/\/)(www\.)?([a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]+)#?$/;
+const urlReg = /^(https?:\/\/)(www\.)?([a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]+)#?$/;
 
-const createUserValid = joi.object({
-  name: joi.string().min(2).max(30),
-  about: joi.string().min(2).max(30),
-  avatar: joi.string().pattern(urlAvatarValid).message('Неправильный URL аватара'),
-  email: joi.string().required().email(),
-  password: joi.string().required().min(8),
+const loginValid = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
 });
 
-const updateAvatarValid = joi.object({
-  avatar: joi.string().pattern(urlAvatarValid).message('Неправильный URL аватара'),
+const createUserValid = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(urlReg),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
 });
 
-const updateUserValidation = joi.object({
-  name: joi.string().min(2).max(30),
-  about: joi.string().min(2).max(30),
+const userByIdValid = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().length(24).required(),
+  }),
+});
+
+const updateUserValid = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+  }),
+});
+
+const updateAvatarValid = celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().pattern(urlReg),
+  }),
+});
+
+const createCardValid = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().pattern(urlReg),
+  }),
 });
 
 module.exports = {
+  loginValid,
   createUserValid,
-  updateUserValidation,
+  userByIdValid,
+  updateUserValid,
   updateAvatarValid,
+  createCardValid,
 };

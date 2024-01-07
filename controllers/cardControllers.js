@@ -23,9 +23,9 @@ const createCard = async (req, res, next) => {
     const newCard = await card.create({ name, link, owner });
     return res.status(OK).send(newCard);
   } catch (error) {
-    // if (error.name === 'ValidationError') {
-    //   return next(new BadRequestError(error.message));
-    // }
+    if (error.name === 'ValidationError') {
+      return next(new BadRequestError(error.message));
+    }
     return next(error);
   }
 };

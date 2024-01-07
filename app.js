@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { celebrate } = require('celebrate');
 const router = require('./routers');
 const errors = require('./middlewars/errors');
 
@@ -16,7 +15,6 @@ mongoose
 app.use(express.json());
 
 app.use(router);
-app.use(celebrate());
 app.use(errors);
 app.use((req, res) => {
   res.status(404).json({ message: 'Страница не найдена' });
