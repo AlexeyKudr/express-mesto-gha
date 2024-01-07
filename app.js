@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors: celebrateErrors } = require('celebrate');
 const router = require('./routers');
 const errors = require('./middlewars/errors');
 
@@ -15,6 +16,7 @@ mongoose
 app.use(express.json());
 
 app.use(router);
+app.use(celebrateErrors());
 app.use(errors);
 
 app.listen(PORT, () => {
