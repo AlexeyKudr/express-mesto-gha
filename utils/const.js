@@ -4,6 +4,7 @@ const HTTP_INTERNAL_SERVER_ERROR = 500;
 const OK = 200;
 const Conflict = 409;
 const HTTP_STATUS_FORBIDDEN = 403;
+const MONGO_DUPLICATE_ERROR_CODE = 11000;
 
 module.exports = {
   HTTP_NOT_FOUND,
@@ -12,4 +13,5 @@ module.exports = {
   OK,
   Conflict,
   HTTP_STATUS_FORBIDDEN,
+  MONGO_DUPLICATE_ERROR_CODE,
 };

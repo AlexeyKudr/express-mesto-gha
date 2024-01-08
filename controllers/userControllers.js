@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const user = require('../models/user');
 const {
-  HTTP_NOT_FOUND, OK, Unauthorized, MONGO_DUPLICATE_ERROR,
+  HTTP_NOT_FOUND, OK, Unauthorized, MONGO_DUPLICATE_ERROR_CODE,
 } = require('../utils/const');
 const BadRequestError = require('../middlewars/BadRequestError');
 const DuplicateError = require('../middlewars/DuplicateError');
@@ -54,7 +54,7 @@ const createUser = async (req, res, next) => {
         avatar: newUser.avatar,
       });
   } catch (error) {
-    if (error.code === MONGO_DUPLICATE_ERROR) {
+    if (error.code === MONGO_DUPLICATE_ERROR_CODE) {
       return next(new DuplicateError('Такой email уже существует'));
     }
     return next(error);
@@ -94,7 +94,7 @@ const updateAvatar = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const User = await user.findOne({ email }).select('+password').orFail(() => next(new Unauthorized('Неверные email или password')));
+    const User = await user.findOne({ email }).select('+password');
     if (!User) {
       return res
         .status(Unauthorized)
@@ -106,7 +106,7 @@ const login = async (req, res, next) => {
         .status(Unauthorized)
         .send({ message: 'Неверные почта или пароль' });
     }
-    const token = jwt.sign({ _id: user._id }, 'secret_key', {
+    const token = jwt.sign({ _id: User._id }, 'secret_key', {
       expiresIn: '7d',
     });
     res.cookie('jwt', token, {
@@ -116,7 +116,7 @@ const login = async (req, res, next) => {
     return res
       .status(OK)
       .send({
-        data: { email: user.email, id: user._id },
+        data: { email: User.email, id: User._id },
         token,
         message: 'Аутентификация успешна',
       });
