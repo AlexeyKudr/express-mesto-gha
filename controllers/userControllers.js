@@ -125,7 +125,7 @@ const login = async (req, res, next) => {
   }
 };
 
-const currentUser = async (res, req, next) => {
+const currentUser = async (req, res, next) => {
   try {
     if (!req.user || !req.user._id) {
       throw new Error('Пользователь не авторизован');
