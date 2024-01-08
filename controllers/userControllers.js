@@ -7,10 +7,10 @@ const BadRequestError = require('../middlewars/BadRequestError');
 
 const getUsers = async (req, res, next) => {
   try {
-    const users = await user.find({});
+    const Users = await user.find({});
     res
       .status(OK)
-      .send(users);
+      .send(Users);
   } catch (error) {
     next(error);
   }
