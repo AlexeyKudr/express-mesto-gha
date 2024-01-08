@@ -2,8 +2,11 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const user = require('../models/user');
-const { HTTP_NOT_FOUND, OK, Unauthorized } = require('../utils/const');
+const {
+  HTTP_NOT_FOUND, OK, Unauthorized, MONGO_DUPLICATE_ERROR,
+} = require('../utils/const');
 const BadRequestError = require('../middlewars/BadRequestError');
+const DuplicateError = require('../middlewars/DuplicateError');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -51,6 +54,9 @@ const createUser = async (req, res, next) => {
         avatar: newUser.avatar,
       });
   } catch (error) {
+    if (error.code === MONGO_DUPLICATE_ERROR) {
+      return next(new DuplicateError('Такой email уже существует'));
+    }
     return next(error);
   }
 };
@@ -88,7 +94,7 @@ const updateAvatar = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const User = await user.findOne({ email }).select('+password');
+    const User = await user.findOne({ email }).select('+password').orFail(() => next(new Unauthorized('Неверные email или password')));
     if (!User) {
       return res
         .status(Unauthorized)
