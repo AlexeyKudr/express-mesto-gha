@@ -3,10 +3,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const user = require('../models/user');
 const {
-  HTTP_NOT_FOUND, OK, Unauthorized, MONGO_DUPLICATE_ERROR_CODE,
+  HTTP_NOT_FOUND, OK, MONGO_DUPLICATE_ERROR_CODE,
 } = require('../utils/const');
 const BadRequestError = require('../middlewars/BadRequestError');
 const DuplicateError = require('../middlewars/DuplicateError');
+const UnAuthorized = require('../middlewars/Unauthorized');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -96,15 +97,11 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const User = await user.findOne({ email }).select('+password');
     if (!User) {
-      return res
-        .status(Unauthorized)
-        .send({ message: 'Неверные почта или пароль' });
+      throw new UnAuthorized('Неверные почта или пароль');
     }
     const isMatch = await bcrypt.compare(password, User.password);
     if (!isMatch) {
-      return res
-        .status(Unauthorized)
-        .send({ message: 'Неверные почта или пароль' });
+      throw new UnAuthorized('Неверные почта или пароль');
     }
     const token = jwt.sign({ _id: User._id }, 'secret_key', {
       expiresIn: '7d',
