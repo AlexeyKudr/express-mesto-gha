@@ -8,6 +8,7 @@ const {
 const BadRequestError = require('../middlewars/BadRequestError');
 const DuplicateError = require('../middlewars/DuplicateError');
 const UnAuthorized = require('../middlewars/Unauthorized');
+const NotFoundError = require('../middlewars/NotFoundError');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -124,14 +125,11 @@ const login = async (req, res, next) => {
 
 const currentUser = async (req, res, next) => {
   try {
-    if (!req.user || !req.user._id) {
-      throw new Error('Пользователь не авторизован');
-    }
     const userId = req.user._id;
     const User = await user.findById(userId);
     if (!User) {
       return res
-        .status(HTTP_NOT_FOUND)
+        .status(NotFoundError)
         .send({ message: 'Пользователь не найден' });
     }
     return res
