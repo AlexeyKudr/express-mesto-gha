@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const user = require('../models/user');
 const {
   HTTP_NOT_FOUND, OK, MONGO_DUPLICATE_ERROR_CODE,
 } = require('../utils/const');
-const BadRequestError = require('../middlewars/BadRequestError');
+// const BadRequestError = require('../middlewars/BadRequestError');
 const DuplicateError = require('../middlewars/DuplicateError');
 const UnAuthorized = require('../middlewars/Unauthorized');
 const NotFoundError = require('../middlewars/NotFoundError');
@@ -23,13 +23,10 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const { userId } = req.params.userId;
     const User = await user.findById(userId);
     if (!User) {
       return res.status(HTTP_NOT_FOUND).send({ message: 'Пользователь не найден' });
-    }
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      throw new BadRequestError('Некорректный ID пользователя');
     }
     return res.status(OK).send(User);
   } catch (error) {
