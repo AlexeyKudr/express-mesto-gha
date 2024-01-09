@@ -21,7 +21,11 @@ const createUserValid = celebrate({
 
 const userByIdValid = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().length(24).required(),
+    userId: Joi.string().length(24).required()
+      .messages({
+        'string.length': 'Некорректный ID пользователя',
+        'any.required': 'ID пользователя обязателен',
+      }),
   }),
 });
 
