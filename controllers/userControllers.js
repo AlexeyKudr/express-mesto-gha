@@ -24,7 +24,7 @@ const getUserById = async (req, res, next) => {
     const { userId } = req.params;
     const User = await user.findById(userId);
     if (!User) {
-      return res.status(NotFoundError).send({ message: 'Пользователь не найден' });
+      return next(new NotFoundError('Пользователь не найден'));
     }
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       throw new BadRequestError('Некорректный ID пользователя');
