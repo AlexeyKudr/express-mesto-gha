@@ -8,9 +8,9 @@ const { userByIdValid, updateUserValid, updateAvatarValid } = require('../middle
 const userRouter = express.Router();
 
 userRouter.get('/', getUsers);
+userRouter.get('/me', currentUser);
 userRouter.get('/:userId', userByIdValid, getUserById);
 userRouter.patch('/me', updateUserValid, updateUser);
 userRouter.patch('/me/avatar', updateAvatarValid, updateAvatar);
-userRouter.get('/me', currentUser);
 
 module.exports = userRouter;
