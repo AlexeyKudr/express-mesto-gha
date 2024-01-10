@@ -2,7 +2,6 @@ const express = require('express');
 const {
   getUsers, getUserById, updateUser, updateAvatar, currentUser,
 } = require('../controllers/userControllers');
-// const auth = require('../middlewars/auth');
 const { userByIdValid, updateUserValid, updateAvatarValid } = require('../middlewars/validations');
 
 const userRouter = express.Router();
