@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { errors: celebrateErrors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const router = require('./routers');
-const errors = require('./middlewars/errors');
+// const errors = require('./middlewars/errors');
 const { HTTP_NOT_FOUND } = require('./utils/const');
 
 const app = express();
@@ -22,7 +22,14 @@ app.use(celebrateErrors());
 app.use('*', (req, res) => {
   res.status(HTTP_NOT_FOUND).send({ message: 'Страница не найдена' });
 });
-app.use(errors);
+app.use((err, req, res, next) => {
+  // Отправка ответа клиенту
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message || 'Что-то пошло не так',
+    },
+  });
+});
 
 app.listen(PORT, () => {
 });
