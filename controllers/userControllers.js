@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const user = require('../models/user');
-const { OK, MONGO_DUPLICATE_ERROR_CODE } = require('../utils/const');
+const {
+  HTTP_NOT_FOUND, OK, MONGO_DUPLICATE_ERROR_CODE,
+} = require('../utils/const');
 const BadRequestError = require('../middlewars/BadRequestError');
 const DuplicateError = require('../middlewars/DuplicateError');
 const UnAuthorized = require('../middlewars/Unauthorized');
@@ -24,7 +26,7 @@ const getUserById = async (req, res, next) => {
     const { userId } = req.params;
     const User = await user.findById(userId);
     if (!User) {
-      return res.status(NotFoundError).send({ message: 'Пользователь не найден' });
+      return res.status(HTTP_NOT_FOUND).send({ message: 'Пользователь не найден' });
     }
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       throw new BadRequestError('Некорректный ID пользователя');
@@ -120,7 +122,7 @@ const login = async (req, res, next) => {
 
 const currentUser = async (req, res, next) => {
   try {
-    const { userId } = req.user._id;
+    const userId = req.user._id;
     const User = await user.findById(userId);
     if (!User) {
       return res
@@ -129,12 +131,7 @@ const currentUser = async (req, res, next) => {
     }
     return res
       .status(OK)
-      .send({
-        name: User.name,
-        email: User.email,
-        about: User.about,
-        avatar: User.avatar,
-      });
+      .send({ User });
   } catch (error) {
     return next(error);
   }
