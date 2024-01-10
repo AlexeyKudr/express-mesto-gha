@@ -49,6 +49,12 @@ const createCardValid = celebrate({
   }),
 });
 
+const deleteCardValid = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required(),
+  }),
+});
+
 module.exports = {
   loginValid,
   createUserValid,
@@ -56,4 +62,5 @@ module.exports = {
   updateUserValid,
   updateAvatarValid,
   createCardValid,
+  deleteCardValid,
 };

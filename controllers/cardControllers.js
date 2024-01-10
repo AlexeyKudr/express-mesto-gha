@@ -33,16 +33,13 @@ const createCard = async (req, res, next) => {
 const deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
   const userId = req.user._id;
-  if (!mongoose.Types.ObjectId.isValid(cardId)) {
-    return next(new BadRequestError('Некорректный ID карточки'));
-  }
   try {
     const Card = await card.findById(cardId);
     if (!Card) {
-      return next(new NotFoundError('Карточка не найдена'));
+      throw new NotFoundError('Карточка не найдена');
     }
     if (Card.owner.toString() !== userId) {
-      return next(new ForbiddenError('Недостаточно прав для удаления этой карточки'));
+      throw new ForbiddenError('Недостаточно прав для удаления этой карточки');
     }
     await Card.deleteOne({ _id: cardId });
     return res
