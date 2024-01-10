@@ -22,11 +22,11 @@ app.use(celebrateErrors());
 app.use('*', (req, res) => {
   res.status(HTTP_NOT_FOUND).send({ message: 'Страница не найдена' });
 });
-app.use((err, req, res, next) => {
+app.use((error, req, res, next) => {
   // Отправка ответа клиенту
-  res.status(err.status || 500).json({
+  res.status(error.status || 500).json({
     error: {
-      message: err.message || 'Что-то пошло не так',
+      message: error.message || 'Что-то пошло не так',
     },
   });
 });
