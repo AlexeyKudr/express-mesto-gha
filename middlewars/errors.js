@@ -1,13 +1,9 @@
-// const errors = (error, req, res, next) => {
-//   {
-//     // Логирование ошибок
-//     console.error(err);
+const errors = (error, req, res, next) => {
+  const { statusCode = 500, message } = error;
+  res.status(statusCode).send({
+    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
+  });
+  next();
+};
 
-//     // Отправка ответа клиенту
-//     res.status(err.status || 500).json({
-//       error: {
-//         message: err.message || 'Что-то пошло не так'
-//       }
-//     }
-
-// module.exports = errors;
+module.exports = errors;
