@@ -120,13 +120,25 @@ const login = async (req, res, next) => {
   }
 };
 
-// eslint-disable-next-line consistent-return
 const currentUser = async (req, res, next) => {
   try {
-    const User = await user.findById(req.user._id).orFail(() => next(new NotFoundError('Пользователя не найден')));
-    res.send(User);
-  } catch (err) {
-    return next(err);
+    const { userId } = req.params;
+    const User = await user.findById(userId);
+    if (!User) {
+      return res
+        .status(NotFoundError)
+        .send({ message: 'Пользователь не найден' });
+    }
+    return res
+      .status(OK)
+      .send({
+        name: User.name,
+        email: User.email,
+        about: User.about,
+        avatar: User.avatar,
+      });
+  } catch (error) {
+    return next(error);
   }
 };
 

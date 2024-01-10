@@ -21,11 +21,7 @@ const createUserValid = celebrate({
 
 const userByIdValid = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().length(24).required()
-      .messages({
-        'string.length': 'Некорректный ID пользователя',
-        'any.required': 'ID пользователя обязателен',
-      }),
+    userId: Joi.string().length(24).hex().required(),
   }),
 });
 
@@ -49,6 +45,12 @@ const createCardValid = celebrate({
   }),
 });
 
+const likeCardValid = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().length(24).required(),
+  }),
+});
+
 const deleteCardValid = celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().hex().length(24).required(),
@@ -63,4 +65,5 @@ module.exports = {
   updateAvatarValid,
   createCardValid,
   deleteCardValid,
+  likeCardValid,
 };
