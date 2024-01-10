@@ -30,24 +30,24 @@ const createCard = async (req, res, next) => {
   }
 };
 
-const deleteCard = async (req, res, next) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  const userId = req.user._id;
-  try {
-    const Card = await card.findById(cardId);
-    if (!Card) {
-      throw new NotFoundError('Карточка не найдена');
-    }
-    if (Card.owner.toString() !== userId) {
-      throw new ForbiddenError('Недостаточно прав для удаления этой карточки');
-    }
-    await Card.deleteOne({ _id: cardId });
-    return res
-      .status(OK)
-      .send({ message: 'Карточка удалена' });
-  } catch (error) {
-    return next(error);
-  }
+  return card.findById(cardId)
+    .then((Card) => {
+      if (!Card) {
+        throw new NotFoundError('Карточка не найдена.');
+      } else if (Card.owner.toString() !== req.user._id) {
+        throw new ForbiddenError('Недостаточно прав для удаления');
+      }
+      return card.findByIdAndRemove(cardId)
+        .then(() => res.send({ message: 'Карточка успешно удалена' }));
+    })
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        next(new BadRequestError('Некорректный ID карточки'));
+      }
+      next(error);
+    });
 };
 
 const likeCard = async (req, res, next) => {
