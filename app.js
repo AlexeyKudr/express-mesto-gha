@@ -4,7 +4,7 @@ const { errors: celebrateErrors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const router = require('./routers');
 const errors = require('./middlewars/errors');
-const { HTTP_NOT_FOUND } = require('./utils/const');
+const NotFoundError = require('./middlewars/NotFoundError');
 
 const app = express();
 const PORT = 3000;
@@ -19,8 +19,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(router);
 app.use(celebrateErrors());
-app.use('*', (req, res) => {
-  res.status(HTTP_NOT_FOUND).send({ message: 'Страница не найдена' });
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
 });
 app.use(errors);
 
